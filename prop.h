@@ -49,7 +49,7 @@ void forward_prop(float *l1, float *w, float *l2, int n1, int n2){
 //	set_zero<<<n2/pitch_x, pitch_x>>>(l2);
 	cublasSgemv('n', n2, n1, 1.0, w, n2, l1, 1, 0.0, l2, 1);
 	sigmoid<<<n2, 1>>>(l2, l2, beta);
-	cerr << "forward_prop done" << endl;
+//	cerr << "forward_prop done" << endl;
 }
 
 void back_prop(float *l1, float *d1, float *w, float *d2, int n1, int n2){

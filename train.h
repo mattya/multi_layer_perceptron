@@ -64,6 +64,7 @@ void train_step(int ind, int lp){
 	for(int i=0; i<N_layer-1; i++){
 		update_weights(x_gpu[i],  w_gpu[i], delta_gpu[i+1], eta0, N_neuron[i]+1, N_neuron[i+1]);
 	}
+	cerr << "train_step done" << endl;
 /*
 	for(int i=0; i<N_layer; i++){
 		float *cpu_x = (float *)malloc(N_neuron[i]*sizeof(float));
@@ -106,6 +107,8 @@ void train_error(){
 			sum += cpu_delta[k]*cpu_delta[k];
 		}
 		err += sum/M;
+
+		free(cpu_delta);
 	}
 	printf("train err: %f\n", err/batch_size);
 	cerr << "train err: " << err/batch_size << endl;
@@ -129,6 +132,8 @@ void test_error(){
 			sum += cpu_delta[k]*cpu_delta[k];
 		}
 		err += sum/M;
+
+		free(cpu_delta);
 	}
 	printf("test err: %f\n", err/NTest);
 	cerr << "test err: " << err/NTest << endl;
