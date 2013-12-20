@@ -22,22 +22,27 @@ extern int batch_size;
 extern int NTrain;
 extern int NTest;
 
-__device__ float sigmoidk(float x){
+float random(float x1, float x2){
+	return x1 + (rand()%100000)/100000.0*(x2-x1);
+}
+
+
+__device__ float sigmoidk(float x, float beta){
 	return 1.0/(1.0+exp(-beta*x));
 }
 
-__device__ float dsigmoidk(float x){
+__device__ float dsigmoidk(float x, float beta){
 	return beta*x*(1.0-x);
 }
 
-__global__ void sigmoid(float *x, float *z){
-	int idx = blockIdx.x*pitch_x + threadIdx.x;
-	z[idx] = sigmoidk(x[idx]);
+__global__ void sigmoid(float *x, float *z, float beta){
+	int idx = blockIdx.x;
+	z[idx] = sigmoidk(x[idx], beta);
 }
 
-__global__ void sdigmoid(float *x, float *z){
-	int idx = blockIdx.x*pitch_x + threadIdx.x;
-	z[idx] *= dsigmoidk(x[idx]);
+__global__ void dsigmoid(float *x, float *z, float beta){
+	int idx = blockIdx.x;
+	z[idx] *= dsigmoidk(x[idx], beta);
 }
 
 __device__ __host__ int get_stride(int n, int m){
@@ -45,16 +50,16 @@ __device__ __host__ int get_stride(int n, int m){
 }
 
 __global__ void set_state(float *z, float *x){
-	int idx = blockIdx.x*pitch_x + threadIdx.x;
-	x[idx] = z[idx];
+	int idx = blockIdx.x;
+	z[idx] = x[idx];
 }
 __global__ void set_delta(float *z, float *x, float *delta){
-	int idx = blockIdx.x*pitch_x + threadIdx.x;
+	int idx = blockIdx.x;
 	delta[idx] = x[idx] - z[idx];
 }
 
 __global__ void set_zero(float *x){
-	x[blockIdx.x*pitch_x + threadIdx.x] = 0.0f;
+	x[blockIdx.x] = 0.0f;
 }
 
 

@@ -92,7 +92,7 @@ void load_data(){
 	}
 	fclose(fp);
 
-	fp = fopen("../make_training_data/my_output.txt", "r");
+	fp = fopen("../make_training_data/my_input.txt", "r");
 	for(int i=0; i<NTrain; i++){
 		int tmp;
 		for(int j=0; j<M; j++){
@@ -107,7 +107,7 @@ void load_data(){
 			label_test[i][j] = (float)tmp;
 		}
 	}
-	fclose(sfp);
+	fclose(fp);
 
 	cerr << "loading done" << endl;
 }

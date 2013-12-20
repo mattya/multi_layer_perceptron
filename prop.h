@@ -40,25 +40,28 @@ extern float **x_gpu, **w_gpu, **delta_gpu;
 extern float *curnd;
 extern curandGenerator_t curand_gen;
 
-__global__ set_one(float *x, int n){
+__global__ void set_one(float *x, int n){
 	x[n] = 1.0f;
 }
 
 void forward_prop(float *l1, float *w, float *l2, int n1, int n2){
 	set_one<<<1, 1>>>(l1, n1-1);
 //	set_zero<<<n2/pitch_x, pitch_x>>>(l2);
-	cublasSgemv('n', n2, n1, 1.0, w, l1, 1, 0.0, l2, 1);
-	sigmoid<<<n2, 1>>>(l2, l2);
+	cublasSgemv('n', n2, n1, 1.0, w, n2, l1, 1, 0.0, l2, 1);
+	sigmoid<<<n2, 1>>>(l2, l2, beta);
+	cerr << "forward_prop done" << endl;
 }
 
 void back_prop(float *l1, float *d1, float *w, float *d2, int n1, int n2){
-	cublasSgemv('t', n2, n1-1, 1.0, w, d2, 1, 0.0, d1, 1);
-	dsigmoid<<<n1, 1>>>(l1, d1);
+	cublasSgemv('t', n2, n1-1, 1.0, w, n2, d2, 1, 0.0, d1, 1);
+	dsigmoid<<<n1-1, 1>>>(l1, d1, beta);
+	cerr << "back_prop done" << endl;
 }
 
 void update_weights(float *l1, float *w, float *d2, float eta, int n1, int n2){
 	set_one<<<1, 1>>>(l1, n1-1);
 	cublasSger(n2, n1, -eta, d2, 1, l1, 1, w, n2);
+	cerr << "update_weights done" << endl;
 }
 
 

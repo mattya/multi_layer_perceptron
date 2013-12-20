@@ -105,7 +105,7 @@ void cpu_to_gpu_data_test(){
 void gpu_to_cpu_matrix(){
 	for(int i=0; i<N_layer-1; i++){
 
-		cublasGetmatrix(N_neuron[i+1], N_neuron[i]+1, sizeof(float), w_gpu[i], N_neuron[i+1], w_cpu[i], N_neuron[i+1]);
+		cublasGetMatrix(N_neuron[i+1], N_neuron[i]+1, sizeof(float), w_gpu[i], N_neuron[i+1], w_cpu[i], N_neuron[i+1]);
 
 //		for(int j=0; j<N_neuron[i]+1; j++){
 //			cudaMemcpy(&w_cpu[i][j*N_neuron[i+1]], &w_gpu[i][j*(get_stride(N_neuron[i+1], pitch_x))], N_neuron[i+1]*sizeof(float), cudaMemcpyDeviceToHost);

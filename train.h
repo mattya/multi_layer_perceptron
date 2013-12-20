@@ -62,8 +62,30 @@ void train_step(int ind, int lp){
 		back_prop(x_gpu[i], delta_gpu[i], w_gpu[i], delta_gpu[i+1], N_neuron[i]+1, N_neuron[i+1]);
 	}
 	for(int i=0; i<N_layer-1; i++){
-		update_weights(x_gpu[i],  w_gpu[i], delta_gpu[i+1], eta0*50/(lp+50), N_neuron[i]+1, N_neuron[i+1]);
+		update_weights(x_gpu[i],  w_gpu[i], delta_gpu[i+1], eta0, N_neuron[i]+1, N_neuron[i+1]);
 	}
+/*
+	for(int i=0; i<N_layer; i++){
+		float *cpu_x = (float *)malloc(N_neuron[i]*sizeof(float));
+		cudaMemcpy(cpu_x, x_gpu[i], N_neuron[i]*sizeof(float), cudaMemcpyDeviceToHost);
+		for(int j=0; j<N_neuron[i]; j++){
+			cerr << cpu_x[j] << " ";
+		}
+		cerr << endl;
+	}
+	cerr << endl;
+	for(int i=N_layer-1; i>0; i--){
+		float *cpu_x = (float *)malloc(N_neuron[i]*sizeof(float));
+		cudaMemcpy(cpu_x, delta_gpu[i], N_neuron[i]*sizeof(float), cudaMemcpyDeviceToHost);
+		for(int j=0; j<N_neuron[i]; j++){
+			cerr << cpu_x[j] << " ";
+		}
+		cerr << endl;
+	}
+	cerr << endl;
+
+	cerr << "--------" << endl;
+	*/
 }
 
 void train_error(){
@@ -74,7 +96,7 @@ void train_error(){
 		for(int i=0; i<N_layer-1; i++){
 			forward_prop(x_gpu[i], w_gpu[i], x_gpu[i+1], N_neuron[i]+1, N_neuron[i+1]);
 		}
-		set_delta<<<M, 1>>>(gpu_label_train[ind], x_gpu[N_layer-1], delta_gpu[N_layer-1]);
+		set_delta<<<M, 1>>>(gpu_label_train[d], x_gpu[N_layer-1], delta_gpu[N_layer-1]);
 
 		float *cpu_delta = (float *)malloc(M*sizeof(float));
 		cudaMemcpy(cpu_delta, delta_gpu[N_layer-1], M*sizeof(float), cudaMemcpyDeviceToHost);
@@ -97,7 +119,7 @@ void test_error(){
 		for(int i=0; i<N_layer-1; i++){
 			forward_prop(x_gpu[i], w_gpu[i], x_gpu[i+1], N_neuron[i]+1, N_neuron[i+1]);
 		}
-		set_delta<<<M, 1>>>(gpu_label_test[ind], x_gpu[N_layer-1], delta_gpu[N_layer-1]);
+		set_delta<<<M, 1>>>(gpu_label_test[d], x_gpu[N_layer-1], delta_gpu[N_layer-1]);
 
 		float *cpu_delta = (float *)malloc(M*sizeof(float));
 		cudaMemcpy(cpu_delta, delta_gpu[N_layer-1], M*sizeof(float), cudaMemcpyDeviceToHost);

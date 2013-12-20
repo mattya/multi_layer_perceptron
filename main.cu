@@ -21,13 +21,13 @@
 
 using namespace std;
 
-float beta = 10.0;
+float beta = 2.0;
 float lambda = 0.00000001;
 float eta0 = 0.015;
 int pitch_x = 32, pitch_y = 32;
 
-int batch_size = 1000;
-int NTrain = 10000;
+int batch_size = 3000;
+int NTrain = 90000;
 int NTest = 10000;
 
 int N_layer;     // include input and output layer
