@@ -1,3 +1,6 @@
+#ifndef __memory_alloc
+#define __memory_alloc
+
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -16,6 +19,9 @@ using namespace std;
 
 extern float beta, lambda, eta0;
 extern int pitch_x, pitch_y;
+extern int batch_size;
+extern int NTrain;
+extern int NTest;
 
 extern int N_layer;     // include input and output layer
 extern int *N_neuron;
@@ -107,3 +113,24 @@ void gpu_to_cpu_matrix(){
 	}
 	cerr << "gpu_to_cpu_matrix done" << endl;
 }
+
+void gpu_free(){
+	for(int i=0; i<NTrain; i++){
+		cudaFree(gpu_data_train[i]);
+		cudaFree(gpu_label_train[i]);
+	}
+	for(int i=0; i<NTest; i++){
+		cudaFree(gpu_data_test[i]);
+		cudaFree(gpu_label_test[i]);
+	}
+	for(int i=0; i<N_layer; i++){
+		cudaFree(x_gpu[i]);
+		cudaFree(delta_gpu[i]);
+	}
+	for(int i=0; i<N_layer-1; i++){
+		cudaFree(w_gpu[i]);
+	}
+}
+
+
+#endif /* __memory_alloc */

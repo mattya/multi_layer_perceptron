@@ -1,3 +1,6 @@
+#ifndef __file_manager
+#define __file_manager
+
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -12,10 +15,15 @@
 #include <curand.h>
 using namespace std;
 
+#include "memory_alloc.h"
+
 
 extern float beta, lambda, eta0;
 extern int pitch_x, pitch_y;
 
+extern int batch_size;
+extern int NTrain;
+extern int NTest;
 extern int N_layer;     // include input and output layer
 extern int *N_neuron;
 extern int N, M, N_max;        // input and output layer
@@ -120,3 +128,6 @@ void output_weight(){
 	}
 	cerr << "output_weight done" << endl;
 }
+
+
+#endif /* __file_manager */

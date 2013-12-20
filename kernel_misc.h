@@ -1,3 +1,6 @@
+#ifndef __misc
+#define __misc
+
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -15,6 +18,9 @@ using namespace std;
 extern float beta, lambda, eta0;
 extern int pitch_x, pitch_y;
 
+extern int batch_size;
+extern int NTrain;
+extern int NTest;
 
 __device__ float sigmoidk(float x){
 	return 1.0/(1.0+exp(-beta*x));
@@ -22,6 +28,16 @@ __device__ float sigmoidk(float x){
 
 __device__ float dsigmoidk(float x){
 	return beta*x*(1.0-x);
+}
+
+__global__ void sigmoid(float *x, float *z){
+	int idx = blockIdx.x*pitch_x + threadIdx.x;
+	z[idx] = sigmoidk(x[idx]);
+}
+
+__global__ void sdigmoid(float *x, float *z){
+	int idx = blockIdx.x*pitch_x + threadIdx.x;
+	z[idx] *= dsigmoidk(x[idx]);
 }
 
 __device__ __host__ int get_stride(int n, int m){
@@ -41,3 +57,5 @@ __global__ void set_zero(float *x){
 	x[blockIdx.x*pitch_x + threadIdx.x] = 0.0f;
 }
 
+
+#endif /* __misc */
