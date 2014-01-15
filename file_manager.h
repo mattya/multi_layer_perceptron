@@ -75,36 +75,35 @@ void load_data(){
 		w_cpu[i] = (float *)malloc((N_neuron[i]+1)*N_neuron[i+1]*sizeof(float));
 	}
 
-	fp = fopen("../make_training_data/my_output.txt", "r");
+	fp = fopen("/home/mattya/Dropbox/kaneko_ken/2013_winter/train_data/handwritten_digits_rot.txt", "r");
+//	fp = fopen("/home/mattya/Dropbox/kaneko_ken/2013_winter/train_data/abcdefghij.txt", "r");
 	for(int i=0; i<NTrain; i++){
-		for(int j=0; j<N; j++){
-			int in;
-			fscanf(fp, "%d", &in);
-			data_train[i][j] = (float)in;
+//		if(i%100==0) cerr << i << endl;
+		int tmp;
+		fscanf(fp, "%d,", &tmp);
+		for(int j=0; j<M; j++){
+			label_train[i][j] = 0;
 		}
-	}
-	for(int i=0; i<NTest; i++){
-		for(int j=0; j<N; j++){
-			int in;
-			fscanf(fp, "%d", &in);
-			data_test[i][j] = (float)in;
-		}
-	}
-	fclose(fp);
+		label_train[i][tmp] = 1;
 
-	fp = fopen("../make_training_data/my_input.txt", "r");
-	for(int i=0; i<NTrain; i++){
-		int tmp;
-		for(int j=0; j<M; j++){
-			fscanf(fp, "%d", &tmp);
-			label_train[i][j] = (float)tmp;
+		for(int j=0; j<N; j++){
+			int in;
+			fscanf(fp, "%d,", &in);
+			data_train[i][j] = (float)in/256.0f;
 		}
 	}
 	for(int i=0; i<NTest; i++){
+//		if(i%100==0) cerr << i << endl;
 		int tmp;
+		fscanf(fp, "%d,", &tmp);
 		for(int j=0; j<M; j++){
-			fscanf(fp, "%d", &tmp);
-			label_test[i][j] = (float)tmp;
+			label_test[i][j] = 0;
+		}
+		label_test[i][tmp] = 1;
+		for(int j=0; j<N; j++){
+			int in;
+			fscanf(fp, "%d,", &in);
+			data_test[i][j] = (float)in/256.0f;
 		}
 	}
 	fclose(fp);

@@ -18,16 +18,17 @@
 #include "file_manager.h"
 #include "memory_alloc.h"
 #include "train.h"
+#include "deform.h"
 
 using namespace std;
 
-float beta = 2.0;
-float lambda = 0.00000001;
-float eta0 = 0.015;
+float beta = 1.0;
+float lambda = 0.000005;
+float eta0 = 0.01;
 int pitch_x = 32, pitch_y = 32;
 
 int batch_size = 3000;
-int NTrain = 90000;
+int NTrain = 30000;
 int NTest = 10000;
 
 int N_layer;     // include input and output layer
@@ -79,6 +80,8 @@ void learning(){
 }
 int main(){
 	cublasInit();
+	curandCreateGenerator(&curand_gen, CURAND_RNG_PSEUDO_DEFAULT);
+	curandSetPseudoRandomGeneratorSeed(curand_gen, 0);
 
 	load_data();
 	gpu_alloc();

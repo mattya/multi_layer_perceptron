@@ -64,7 +64,7 @@ void train_step(int ind, int lp){
 	for(int i=0; i<N_layer-1; i++){
 		update_weights(x_gpu[i],  w_gpu[i], delta_gpu[i+1], eta0, N_neuron[i]+1, N_neuron[i+1]);
 	}
-	cerr << "train_step done" << endl;
+//	cerr << "train_step done" << endl;
 /*
 	for(int i=0; i<N_layer; i++){
 		float *cpu_x = (float *)malloc(N_neuron[i]*sizeof(float));
@@ -104,9 +104,10 @@ void train_error(){
 		
 		float sum = 0;
 		for(int k=0; k<M; k++){
-			sum += cpu_delta[k]*cpu_delta[k];
+			if(cpu_delta[k]*cpu_delta[k] > 0.25) sum = 1.0;
+//			sum += cpu_delta[k]*cpu_delta[k]/M;
 		}
-		err += sum/M;
+		err += sum;
 
 		free(cpu_delta);
 	}
@@ -129,9 +130,10 @@ void test_error(){
 		
 		float sum = 0;
 		for(int k=0; k<M; k++){
-			sum += cpu_delta[k]*cpu_delta[k];
+			if(cpu_delta[k]*cpu_delta[k] > 0.25) sum = 1.0;
+//			sum += cpu_delta[k]*cpu_delta[k]/M;
 		}
-		err += sum/M;
+		err += sum;
 
 		free(cpu_delta);
 	}

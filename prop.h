@@ -55,13 +55,14 @@ void forward_prop(float *l1, float *w, float *l2, int n1, int n2){
 void back_prop(float *l1, float *d1, float *w, float *d2, int n1, int n2){
 	cublasSgemv('t', n2, n1-1, 1.0, w, n2, d2, 1, 0.0, d1, 1);
 	dsigmoid<<<n1-1, 1>>>(l1, d1, beta);
-	cerr << "back_prop done" << endl;
+//	cerr << "back_prop done" << endl;
 }
 
 void update_weights(float *l1, float *w, float *d2, float eta, int n1, int n2){
 	set_one<<<1, 1>>>(l1, n1-1);
 	cublasSger(n2, n1, -eta, d2, 1, l1, 1, w, n2);
-	cerr << "update_weights done" << endl;
+	cublasSaxpy(n1*n2, -lambda, w, 1, w, 1);
+//	cerr << "update_weights done" << endl;
 }
 
 
